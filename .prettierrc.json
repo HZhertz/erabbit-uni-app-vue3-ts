@@ -2,6 +2,6 @@
   "singleQuote": true,
   "semi": false,
   "printWidth": 100,
-  "trailingComma": "all",
+  "trailingComma": "none",
   "endOfLine": "auto"
 }
