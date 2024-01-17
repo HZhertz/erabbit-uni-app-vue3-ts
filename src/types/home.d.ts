@@ -37,3 +37,6 @@ export type HotItem = {
   /** 推荐类型 */
   type: string
 }
+
+/** 猜你喜欢-商品类型 */
+export type GuessItem = GoodsItem
