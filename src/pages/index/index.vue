@@ -73,6 +73,7 @@ const onRefresherrefresh = async () => {
       scroll-y
       class="scroll-view"
       @scrolltolower="onScrolltolower"
+      refresher-enabled
       @refresherrefresh="onRefresherrefresh"
       :refresher-triggered="isTriggered"
     >
