@@ -5,6 +5,7 @@ import type { BannerItem, CategoryItem, HotItem } from '@/types/home'
 import CustomNavbar from './components/CustomNavbar.vue'
 import CategoryPanel from './components/CategoryPanel.vue'
 import HotPanel from './components/HotPanel.vue'
+import PageSkeleton from './components/PageSkeleton.vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { useGuessList } from '@/composables'
 
@@ -77,14 +78,17 @@ const onRefresherrefresh = async () => {
       @refresherrefresh="onRefresherrefresh"
       :refresher-triggered="isTriggered"
     >
-      <!-- 自定义轮播图 -->
-      <XtxSwiper :list="bannerList" />
-      <!-- 分类面板 -->
-      <CategoryPanel :list="categoryList" />
-      <!-- 热门推荐 -->
-      <HotPanel :list="hotList" />
-      <!-- 猜你喜欢 -->
-      <XtxGuess ref="guessRef" />
+      <PageSkeleton v-if="isLoading" />
+      <template v-else>
+        <!-- 自定义轮播图 -->
+        <XtxSwiper :list="bannerList" />
+        <!-- 分类面板 -->
+        <CategoryPanel :list="categoryList" />
+        <!-- 热门推荐 -->
+        <HotPanel :list="hotList" />
+        <!-- 猜你喜欢 -->
+        <XtxGuess ref="guessRef" />
+      </template>
     </scroll-view>
   </view>
 </template>
