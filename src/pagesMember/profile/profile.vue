@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import type { Gender, ProfileDetail } from '@/types/member'
-import { getMemberProfileAPI } from '@/services/profile'
+import { getMemberProfileAPI, putMemberProfileAPI } from '@/services/profile'
 import { useMemberStore } from '@/stores'
 import { onLoad } from '@dcloudio/uni-app'
 
@@ -80,6 +80,44 @@ const uploadFile = (file: string) => {
     }
   })
 }
+
+// 修改性别
+const onGenderChange: UniHelper.RadioGroupOnChange = (ev) => {
+  profile.value.gender = ev.detail.value as Gender
+}
+
+// 修改生日
+const onBirthdayChange: UniHelper.DatePickerOnChange = (ev) => {
+  profile.value.birthday = ev.detail.value
+}
+
+// 修改城市
+let fullLocationCode: [string, string, string] = ['', '', '']
+const onFullLocationChange: UniHelper.RegionPickerOnChange = (ev) => {
+  // 修改前端界面
+  profile.value.fullLocation = ev.detail.value.join(' ')
+  // 提交后端更新
+  fullLocationCode = ev.detail.code!
+}
+
+// 点击保存提交表单
+const onSubmit = async () => {
+  const { nickname, gender, birthday } = profile.value
+  const res = await putMemberProfileAPI({
+    nickname,
+    gender,
+    birthday,
+    provinceCode: fullLocationCode[0],
+    cityCode: fullLocationCode[1],
+    countyCode: fullLocationCode[2]
+  })
+  // 更新Store昵称
+  memberStore.profile!.nickname = res.result.nickname
+  uni.showToast({ icon: 'success', title: '保存成功' })
+  setTimeout(() => {
+    uni.navigateBack()
+  }, 400)
+}
 </script>
 
 <template>
@@ -110,7 +148,7 @@ const uploadFile = (file: string) => {
         </view>
         <view class="form-item">
           <text class="label">性别</text>
-          <radio-group>
+          <radio-group @change="onGenderChange">
             <label class="radio">
               <radio value="男" color="#27ba9b" :checked="profile?.gender === '男'" />
               男
@@ -129,6 +167,7 @@ const uploadFile = (file: string) => {
             start="1900-01-01"
             :value="profile?.birthday"
             :end="new Date()"
+            @change="onBirthdayChange"
           >
             <view v-if="profile?.birthday">{{ profile?.birthday }}</view>
             <view class="placeholder" v-else>请选择日期</view>
@@ -138,7 +177,12 @@ const uploadFile = (file: string) => {
         <!-- #ifdef MP-WEIXIN -->
         <view class="form-item">
           <text class="label">城市</text>
-          <picker mode="region" class="picker" :value="profile?.fullLocation?.split(' ')">
+          <picker
+            mode="region"
+            class="picker"
+            :value="profile?.fullLocation?.split(' ')"
+            @change="onFullLocationChange"
+          >
             <view v-if="profile?.fullLocation">{{ profile.fullLocation }}</view>
             <view class="placeholder" v-else>请选择城市</view>
           </picker>
@@ -150,7 +194,7 @@ const uploadFile = (file: string) => {
         </view>
       </view>
       <!-- 提交按钮 -->
-      <button class="form-button">保 存</button>
+      <button class="form-button" @tap="onSubmit">保 存</button>
     </view>
   </view>
 </template>
