@@ -131,7 +131,7 @@ const onSubmit = async () => {
       </uni-forms-item>
       <uni-forms-item name="address" class="form-item">
         <text class="label">详细地址</text>
-        <input class="input" placeholder="街道、楼牌号等信息" />
+        <input class="input" placeholder="街道、楼牌号等信息" v-model="form.address" />
       </uni-forms-item>
       <view class="form-item">
         <label class="label">设为默认地址</label>

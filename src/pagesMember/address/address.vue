@@ -1,10 +1,27 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { getMemberAddressAPI } from '@/services/address'
+import type { AddressItem } from '@/types/address'
+import { onShow } from '@dcloudio/uni-app'
+import { ref } from 'vue'
+
+// 获取收货地址列表数据
+const addressList = ref<AddressItem[]>([])
+const getMemberAddressData = async () => {
+  const res = await getMemberAddressAPI()
+  addressList.value = res.result
+}
+
+// 初始化调用(页面显示)
+onShow(() => {
+  getMemberAddressData()
+})
+</script>
 
 <template>
   <view class="viewport">
     <!-- 地址列表 -->
     <scroll-view enable-back-to-top class="scroll-view" scroll-y>
-      <view v-if="true" class="address">
+      <view v-if="addressList.length" class="address">
         <uni-swipe-action class="address-list">
           <!-- 收货地址项 -->
           <uni-swipe-action-item class="item" v-for="item in addressList" :key="item.id">
