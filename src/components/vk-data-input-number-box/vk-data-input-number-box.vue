@@ -54,7 +54,6 @@
 </template>
 <script>
 /* eslint-disable */
-
 /**
  * numberBox 步进器（此为uview组件改造）
  * @description 该组件一般用于商城购物选择物品数量的场景。注意：该输入框只能输入大于或等于0的整数，不支持小数输入
@@ -246,6 +245,10 @@ export default {
     valueCom() {
       // #ifndef VUE3
       return this.value
+      // #endif
+
+      // #ifdef VUE3
+      return this.modelValue
       // #endif
     },
     getCursorSpacing() {

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { deleteMemberCartAPI, getMemberCartAPI } from '@/services/cart'
+import type { InputNumberBoxEvent } from '@/components/vk-data-input-number-box/vk-data-input-number-box'
+import { deleteMemberCartAPI, getMemberCartAPI, putMemberCartBySkuIdAPI } from '@/services/cart'
 import { useMemberStore } from '@/stores'
 import type { CartItem } from '@/types/cart'
 import { onShow } from '@dcloudio/uni-app'
@@ -39,6 +40,11 @@ const onDeleteCart = (skuId: string) => {
       }
     }
   })
+}
+
+// 修改商品数量
+const onChangeCount = (ev: InputNumberBoxEvent) => {
+  putMemberCartBySkuIdAPI(ev.index, { count: ev.value })
 }
 </script>
 
@@ -80,6 +86,7 @@ const onDeleteCart = (skuId: string) => {
                   :min="1"
                   :max="item.stock"
                   :index="item.skuId"
+                  @change="onChangeCount"
                 />
               </view>
             </view>
@@ -306,15 +313,18 @@ const onDeleteCart = (skuId: string) => {
   align-items: center;
   flex-direction: column;
   height: 60vh;
+
   .image {
     width: 400rpx;
     height: 281rpx;
   }
+
   .text {
     color: #444;
     font-size: 26rpx;
     margin: 20rpx 0;
   }
+
   .button {
     width: 240rpx !important;
     height: 60rpx;
@@ -409,6 +419,7 @@ const onDeleteCart = (skuId: string) => {
     }
   }
 }
+
 // 底部占位空盒子
 .toolbar-height {
   height: 100rpx;
