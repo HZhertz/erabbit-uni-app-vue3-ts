@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getMemberAddressAPI } from '@/services/address'
+import { deleteMemberAddressByIdAPI, getMemberAddressAPI } from '@/services/address'
 import type { AddressItem } from '@/types/address'
 import { onShow } from '@dcloudio/uni-app'
 import { ref } from 'vue'
@@ -15,6 +15,23 @@ const getMemberAddressData = async () => {
 onShow(() => {
   getMemberAddressData()
 })
+
+// 删除收货地址
+const onDeleteAddress = (id: string) => {
+  // 二次确认
+  uni.showModal({
+    content: '删除地址?',
+    confirmColor: '#27BA9B',
+    success: async (res) => {
+      if (res.confirm) {
+        // 根据id删除收货地址
+        await deleteMemberAddressByIdAPI(id)
+        // 重新获取收货地址列表
+        getMemberAddressData()
+      }
+    }
+  })
+}
 </script>
 
 <template>
@@ -45,7 +62,7 @@ onShow(() => {
             </view>
             <!-- 右侧插槽 -->
             <template #right>
-              <button class="delete-button">删除</button>
+              <button class="delete-button" @tap="onDeleteAddress(item.id)">删除</button>
             </template>
           </uni-swipe-action-item>
         </uni-swipe-action>
