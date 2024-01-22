@@ -3,7 +3,8 @@ import CartMain from './components/cartMain.vue'
 </script>
 
 <template>
-  <CartMain />
+  <!-- 适配底部安全区 -->
+  <CartMain safe-area-inset-bottom />
 </template>
 
 <style lang="scss">
