@@ -111,9 +111,8 @@ const gotoPayment = () => {
       title: '请选择商品'
     })
   }
-  uni.showToast({
-    title: '等待完成'
-  })
+  // 跳转到结算页
+  uni.navigateTo({ url: '/pagesOrder/create/create' })
 }
 // 猜你喜欢
 const { guessRef, onScrolltolower } = useGuessList()

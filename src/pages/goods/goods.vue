@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { getGoodsByIdAPI } from '@/services/goods'
 import type { GoodsResult } from '@/types/goods'
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad, onShow } from '@dcloudio/uni-app'
 import { computed, ref } from 'vue'
 import AddressPanel from './components/AddressPanel.vue'
 import ServicePanel from './components/ServicePanel.vue'
@@ -11,6 +11,9 @@ import type {
   SkuPopupLocaldata
 } from '@/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup'
 import { postMemberCartAPI } from '@/services/cart'
+import type { AddressItem } from '@/types/address'
+import { getMemberAddressAPI } from '@/services/address'
+import { useAddressStore } from '@/stores'
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
@@ -49,9 +52,32 @@ const getGoodsByIdData = async () => {
   }
 }
 
+// 获取地址列表
+const addressList = ref<AddressItem[]>([])
+const getMemberAddressData = async () => {
+  const res = await getMemberAddressAPI()
+  addressList.value = res.result
+}
+
+// 获取选择的收货地址
+const addressStore = useAddressStore()
+const selectedAddress = computed(() => {
+  return addressStore.selectedAddress || addressList.value?.find((v) => v.isDefault)
+})
+const selectedAddressText = computed(() => {
+  if (selectedAddress.value?.fullLocation && selectedAddress.value?.address) {
+    return `${selectedAddress.value.fullLocation} ${selectedAddress.value.address}`
+  } else {
+    return '请选择商品规格'
+  }
+})
+
 // 页面加载
 onLoad(() => {
   getGoodsByIdData()
+})
+onShow(() => {
+  getMemberAddressData()
 })
 
 // 轮播图变化时
@@ -114,6 +140,10 @@ const onAddCart = async (ev: SkuPopupEvent) => {
   uni.showToast({ title: '添加成功' })
   isShowSku.value = false
 }
+// 立即购买
+const onBuyNow = (ev: SkuPopupEvent) => {
+  uni.navigateTo({ url: `/pagesOrder/create/create?skuId=${ev._id}&count=${ev.buy_num}` })
+}
 </script>
 
 <template>
@@ -131,6 +161,7 @@ const onAddCart = async (ev: SkuPopupEvent) => {
       backgroundColor: '#E9F8F5'
     }"
     @add-cart="onAddCart"
+    @buy-now="onBuyNow"
   />
   <scroll-view enable-back-to-top scroll-y class="viewport">
     <!-- 基本信息 -->
@@ -167,7 +198,7 @@ const onAddCart = async (ev: SkuPopupEvent) => {
         </view>
         <view @tap="openPopup('address')" class="item arrow">
           <text class="label">送至</text>
-          <text class="text ellipsis"> 请选择收获地址 </text>
+          <text class="text ellipsis"> {{ selectedAddressText }} </text>
         </view>
         <view @tap="openPopup('service')" class="item arrow">
           <text class="label">服务</text>
@@ -245,7 +276,12 @@ const onAddCart = async (ev: SkuPopupEvent) => {
 
   <!-- uni-ui 弹出层 -->
   <uni-popup ref="popup" type="bottom" background-color="#fff">
-    <AddressPanel v-if="popupName === 'address'" @close="popup?.close()" />
+    <AddressPanel
+      v-if="popupName === 'address'"
+      :addressList="addressList"
+      :selectedAddressId="selectedAddress?.id"
+      @close="popup?.close()"
+    />
     <ServicePanel v-if="popupName === 'service'" @close="popup?.close()" />
   </uni-popup>
 </template>
