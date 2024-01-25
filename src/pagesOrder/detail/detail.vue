@@ -3,9 +3,10 @@ import { useGuessList } from '@/composables'
 import {
   getMemberOrderByIdAPI,
   getMemberOrderConsignmentByIdAPI,
+  getMemberOrderLogisticsByIdAPI,
   putMemberOrderReceiptByIdAPI
 } from '@/services/order'
-import type { OrderResult } from '@/types/order'
+import type { LogisticItem, OrderResult } from '@/types/order'
 import { onLoad, onReady } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 import { OrderState, orderStateList } from '@/services/constants'
@@ -79,7 +80,22 @@ const order = ref<OrderResult>()
 const getMemberOrderByIdData = async () => {
   const res = await getMemberOrderByIdAPI(query.id)
   order.value = res.result
+  if (
+    [OrderState.DaiShouHuo, OrderState.DaiPingJia, OrderState.YiWanCheng].includes(
+      order.value.orderState
+    )
+  ) {
+    getMemberOrderLogisticsByIdData()
+  }
 }
+
+// 获取物流信息
+const logisticList = ref<LogisticItem[]>([])
+const getMemberOrderLogisticsByIdData = async () => {
+  const res = await getMemberOrderLogisticsByIdAPI(query.id)
+  logisticList.value = res.result.list
+}
+
 onLoad(() => {
   getMemberOrderByIdData()
 })
