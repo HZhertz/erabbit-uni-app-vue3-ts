@@ -6,6 +6,7 @@ import { onLoad, onReady } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 import { OrderState, orderStateList } from '@/services/constants'
 import PageSkeleton from './components/PageSkeleton.vue'
+import { getPayMockAPI, getPayWxPayMiniPayAPI } from '@/services/pay'
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
@@ -84,6 +85,20 @@ const onTimeup = () => {
   // 修改订单状态为已取消
   order.value!.orderState = OrderState.YiQuXiao
 }
+
+// 订单支付
+const onOrderPay = async () => {
+  if (import.meta.env.DEV) {
+    // 开发环境模拟支付
+    await getPayMockAPI({ orderId: query.id })
+  } else {
+    // 正式环境微信支付
+    const res = await getPayWxPayMiniPayAPI({ orderId: query.id })
+    await wx.requestPayment(res.result)
+  }
+  // 关闭当前页，再跳转支付结果页
+  uni.redirectTo({ url: `/pagesOrder/payment/payment?id=${query.id}` })
+}
 </script>
 
 <template>
@@ -114,18 +129,18 @@ const onTimeup = () => {
         <template v-if="order.orderState === OrderState.DaiFuKuan">
           <view class="status icon-clock">等待付款</view>
           <view class="tips">
-            <text class="money">应付金额: ¥ order.payMoney </text>
+            <text class="money">应付金额: ¥ {{ order.payMoney }} </text>
             <text class="time">支付剩余</text>
             <uni-countdown
               color="#fff"
               splitor-color="#fff"
               :show-day="false"
               :show-colon="false"
-              :second="5"
+              :second="order.countdown"
               @timeup="onTimeup"
             />
           </view>
-          <view class="button">去支付</view>
+          <view class="button" @tap="onOrderPay">去支付</view>
         </template>
         <!-- 其他订单状态:展示再次购买按钮 -->
         <template v-else>
@@ -157,8 +172,8 @@ const onTimeup = () => {
         </view>
         <!-- 用户收货地址 -->
         <view class="locate">
-          <view class="user"> order.receiverContact order.receiverMobile </view>
-          <view class="address"> order.receiverAddress </view>
+          <view class="user"> {{ order.receiverContact }} {{ order.receiverMobile }} </view>
+          <view class="address"> {{ order.receiverAddress }} </view>
         </view>
       </view>
 
@@ -195,15 +210,15 @@ const onTimeup = () => {
         <view class="total">
           <view class="row">
             <view class="text">商品总价: </view>
-            <view class="symbol"> order.totalMoney </view>
+            <view class="symbol"> {{ order.totalMoney }} </view>
           </view>
           <view class="row">
             <view class="text">运费: </view>
-            <view class="symbol"> order.postFee </view>
+            <view class="symbol"> {{ order.postFee }} </view>
           </view>
           <view class="row">
             <view class="text">应付金额: </view>
-            <view class="symbol primary"> order.payMoney </view>
+            <view class="symbol primary"> {{ order.payMoney }} </view>
           </view>
         </view>
       </view>
@@ -215,7 +230,7 @@ const onTimeup = () => {
           <view class="item">
             订单编号: {{ query.id }} <text class="copy" @tap="onCopy(query.id)">复制</text>
           </view>
-          <view class="item">下单时间: order.createTime </view>
+          <view class="item">下单时间: {{ order.createTime }} </view>
         </view>
       </view>
 
