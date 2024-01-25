@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import OrderList from './components/OrderList.vue'
 
-// 获取屏幕边界到安全区域距离
-const { safeAreaInsets } = uni.getSystemInfoSync()
 // tabs 数据
 const orderTabs = ref([
   { orderState: 0, title: '全部', isRender: false },
