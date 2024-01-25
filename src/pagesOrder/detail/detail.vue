@@ -78,6 +78,12 @@ const getMemberOrderByIdData = async () => {
 onLoad(() => {
   getMemberOrderByIdData()
 })
+
+// 倒计时结束事件
+const onTimeup = () => {
+  // 修改订单状态为已取消
+  order.value!.orderState = OrderState.YiQuXiao
+}
 </script>
 
 <template>
@@ -115,6 +121,8 @@ onLoad(() => {
               splitor-color="#fff"
               :show-day="false"
               :show-colon="false"
+              :second="5"
+              @timeup="onTimeup"
             />
           </view>
           <view class="button">去支付</view>
@@ -132,9 +140,9 @@ onLoad(() => {
               再次购买
             </navigator>
             <!-- 待发货状态：模拟发货,开发期间使用,用于修改订单状态为已发货 -->
-            <view v-if="true" class="button"> 模拟发货 </view>
+            <view v-if="false" class="button"> 模拟发货 </view>
             <!-- 待收货状态: 展示确认收货按钮 -->
-            <view v-if="true" class="button"> 确认收货 </view>
+            <view v-if="false" class="button"> 确认收货 </view>
           </view>
         </template>
       </view>
