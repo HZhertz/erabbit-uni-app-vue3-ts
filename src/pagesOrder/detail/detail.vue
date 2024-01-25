@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { useGuessList } from '@/composables'
 import {
+  deleteMemberOrderAPI,
   getMemberOrderByIdAPI,
+  getMemberOrderCancelByIdAPI,
   getMemberOrderConsignmentByIdAPI,
   getMemberOrderLogisticsByIdAPI,
   putMemberOrderReceiptByIdAPI
@@ -146,6 +148,33 @@ const onOrderConfirm = () => {
       }
     }
   })
+}
+
+// 删除订单
+const onOrderDelete = () => {
+  // 二次确认
+  uni.showModal({
+    content: '是否删除订单',
+    confirmColor: '#27BA9B',
+    success: async (success) => {
+      if (success.confirm) {
+        await deleteMemberOrderAPI({ ids: [query.id] })
+        uni.redirectTo({ url: '/pagesOrder/list/list' })
+      }
+    }
+  })
+}
+
+// 取消订单
+const onOrderCancel = async () => {
+  // 发送请求
+  const res = await getMemberOrderCancelByIdAPI(query.id, { cancelReason: reason.value })
+  // 更新订单信息
+  order.value = res.result
+  // 关闭弹窗
+  popup.value?.close!()
+  // 轻提示
+  uni.showToast({ icon: 'none', title: '订单取消成功' })
 }
 </script>
 
@@ -301,8 +330,8 @@ const onOrderConfirm = () => {
       <view class="toolbar-height" :style="{ paddingBottom: safeAreaInsets?.bottom + 'px' }"></view>
       <view class="toolbar" :style="{ paddingBottom: safeAreaInsets?.bottom + 'px' }">
         <!-- 待付款状态:展示支付按钮 -->
-        <template v-if="true">
-          <view class="button primary"> 去支付 </view>
+        <template v-if="order.orderState === OrderState.DaiFuKuan">
+          <view class="button primary" @tap="onOrderPay"> 去支付 </view>
           <view class="button" @tap="popup?.open?.()"> 取消订单 </view>
         </template>
         <!-- 其他订单状态:按需展示按钮 -->
@@ -315,11 +344,23 @@ const onOrderConfirm = () => {
             再次购买
           </navigator>
           <!-- 待收货状态: 展示确认收货 -->
-          <view class="button primary" v-if="true"> 确认收货 </view>
+          <view
+            class="button primary"
+            v-if="order.orderState === OrderState.DaiShouHuo"
+            @tap="onOrderConfirm"
+          >
+            确认收货
+          </view>
           <!-- 待评价状态: 展示去评价 -->
-          <view class="button" v-if="true"> 去评价 </view>
+          <view class="button" v-if="order.orderState === OrderState.DaiPingJia"> 去评价 </view>
           <!-- 待评价/已完成/已取消 状态: 展示删除订单 -->
-          <view class="button delete" v-if="true"> 删除订单 </view>
+          <view
+            class="button delete"
+            v-if="order.orderState >= OrderState.DaiPingJia"
+            @tap="onOrderDelete"
+          >
+            删除订单
+          </view>
         </template>
       </view>
     </template>
@@ -341,7 +382,7 @@ const onOrderConfirm = () => {
       </view>
       <view class="footer">
         <view class="button" @tap="popup?.close?.()">取消</view>
-        <view class="button primary">确认</view>
+        <view class="button primary" @tap="onOrderCancel">确认</view>
       </view>
     </view>
   </uni-popup>
