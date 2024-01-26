@@ -2,6 +2,11 @@
 import { ref } from 'vue'
 import OrderList from './components/OrderList.vue'
 
+// 获取页面参数
+const query = defineProps<{
+  type: string
+}>()
+
 // tabs 数据
 const orderTabs = ref([
   { orderState: 0, title: '全部', isRender: false },
@@ -11,13 +16,10 @@ const orderTabs = ref([
   { orderState: 4, title: '待评价', isRender: false }
 ])
 
-// 获取页面参数
-const query = defineProps<{
-  type: string
-}>()
-
 // 高亮下标
 const activeIndex = ref(orderTabs.value.findIndex((v) => v.orderState === Number(query.type)))
+// 默认渲染容器
+orderTabs.value[activeIndex.value].isRender = true
 </script>
 
 <template>
