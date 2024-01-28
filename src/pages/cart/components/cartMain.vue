@@ -25,10 +25,12 @@ const memberStore = useMemberStore()
 
 // 获取购物车数据
 const cartList = ref<CartItem[]>([])
-
+// 优化购物车空列表状态，默认展示列表
+const showCartList = ref(true)
 const getMemberCartData = async () => {
   const res = await getMemberCartAPI()
   cartList.value = res.result
+  showCartList.value = res.result.length > 0
 }
 
 // 初始化调用: 页面显示触发
@@ -123,7 +125,7 @@ const { guessRef, onScrolltolower } = useGuessList()
     <!-- 已登录: 显示购物车 -->
     <template v-if="memberStore.profile">
       <!-- 购物车列表 -->
-      <view class="cart-list" v-if="cartList.length">
+      <view class="cart-list" v-if="showCartList">
         <!-- 优惠提示 -->
         <view class="tips">
           <text class="label">满减</text>
@@ -183,7 +185,7 @@ const { guessRef, onScrolltolower } = useGuessList()
       </view>
       <!-- 吸底工具栏 -->
       <view
-        v-if="true"
+        v-if="showCartList"
         class="toolbar"
         :style="{ paddingBottom: safeAreaInsetBottom ? safeAreaInsets?.bottom + 'px' : 0 }"
       >
