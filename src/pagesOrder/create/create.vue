@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { getMemberAddressAPI } from '@/services/address'
-import { getMemberOrderPreAPI, getMemberOrderPreNowAPI, postMemberOrderAPI } from '@/services/order'
+import {
+  getMemberOrderPreAPI,
+  getMemberOrderPreNowAPI,
+  getMemberOrderRepurchaseByIdAPI,
+  postMemberOrderAPI
+} from '@/services/order'
 import { useAddressStore } from '@/stores'
 import type { AddressItem } from '@/types/address'
 import type { OrderPreResult } from '@/types/order'
@@ -42,6 +47,10 @@ const getMemberOrderPreData = async () => {
       count: query.count,
       skuId: query.skuId
     })
+    orderPre.value = res.result
+  } else if (query.orderId) {
+    // 再次购买
+    const res = await getMemberOrderRepurchaseByIdAPI(query.orderId)
     orderPre.value = res.result
   } else {
     const res = await getMemberOrderPreAPI()
