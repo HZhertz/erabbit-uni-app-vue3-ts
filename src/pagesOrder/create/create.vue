@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { getMemberAddressAPI } from '@/services/address'
 import { getMemberOrderPreAPI, getMemberOrderPreNowAPI, postMemberOrderAPI } from '@/services/order'
 import { useAddressStore } from '@/stores'
+import type { AddressItem } from '@/types/address'
 import type { OrderPreResult } from '@/types/order'
 import { onLoad } from '@dcloudio/uni-app'
 import { computed, ref } from 'vue'
@@ -47,14 +49,21 @@ const getMemberOrderPreData = async () => {
   }
 }
 
+// 获取地址列表
+const addressList = ref<AddressItem[]>([])
+const getMemberAddressData = async () => {
+  const res = await getMemberAddressAPI()
+  addressList.value = res.result
+}
+
 onLoad(() => {
-  getMemberOrderPreData()
+  Promise.all([getMemberOrderPreData(), getMemberAddressData()])
 })
 
 const addressStore = useAddressStore()
 // 收货地址
 const selecteAddress = computed(() => {
-  return addressStore.selectedAddress || orderPre.value?.userAddresses.find((v) => v.isDefault)
+  return addressStore.selectedAddress || addressList.value.find((v) => v.isDefault)
 })
 
 // 提交订单

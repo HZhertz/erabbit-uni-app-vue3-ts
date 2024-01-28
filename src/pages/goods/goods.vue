@@ -62,7 +62,7 @@ const getMemberAddressData = async () => {
 // 获取选择的收货地址
 const addressStore = useAddressStore()
 const selectedAddress = computed(() => {
-  return addressStore.selectedAddress || addressList.value?.find((v) => v.isDefault)
+  return addressStore.selectedAddress || addressList.value.find((v) => v.isDefault)
 })
 const selectedAddressText = computed(() => {
   if (selectedAddress.value?.fullLocation && selectedAddress.value?.address) {

@@ -11,7 +11,7 @@ import {
 import type { LogisticItem, OrderResult } from '@/types/order'
 import { onLoad, onReady } from '@dcloudio/uni-app'
 import { ref } from 'vue'
-import { OrderState, orderStateList } from '@/services/constants'
+import { OrderState, orderStateList } from '@/types/constants'
 import PageSkeleton from './components/PageSkeleton.vue'
 import { getPayMockAPI, getPayWxPayMiniPayAPI } from '@/services/pay'
 

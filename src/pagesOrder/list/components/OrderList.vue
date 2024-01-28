@@ -2,8 +2,8 @@
 import { getMemberOrderAPI } from '@/services/order'
 import type { OrderItem, OrderListParams } from '@/types/order'
 import { onMounted, ref } from 'vue'
-import { orderStateList } from '@/services/constants'
-import { OrderState } from '@/services/constants'
+import { orderStateList } from '@/types/constants'
+import { OrderState } from '@/types/constants'
 import { getPayMockAPI, getPayWxPayMiniPayAPI } from '@/services/pay'
 
 // 获取屏幕边界到安全区域距离
