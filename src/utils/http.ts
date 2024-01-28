@@ -1,3 +1,14 @@
+/**
+ * 添加拦截器:
+ *   拦截 request 请求
+ *   拦截 uploadFile 文件上传
+ *
+ * TODO:
+ *   1. 非 http 开头需拼接地址
+ *   2. 请求超时
+ *   3. 添加小程序端请求头标识
+ *   4. 添加 token 请求头标识
+ */
 import { useMemberStore } from '@/stores'
 
 const baseURL = 'https://pcapi-xiaotuxian-front-devtest.itheima.net'
