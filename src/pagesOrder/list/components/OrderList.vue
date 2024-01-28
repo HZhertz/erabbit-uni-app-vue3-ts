@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getMemberOrderAPI } from '@/services/order'
+import { getMemberOrderAPI, putMemberOrderReceiptByIdAPI } from '@/services/order'
 import type { OrderItem, OrderListParams } from '@/types/order'
 import { onMounted, ref } from 'vue'
 import { orderStateList } from '@/types/constants'
@@ -78,6 +78,23 @@ const onOrderPay = async (id: string) => {
   order!.orderState = OrderState.DaiFaHuo
 }
 
+// 确认收货
+const onOrderConfirm = (id: string) => {
+  uni.showModal({
+    content: '为保障您的权益，请收到货并确认无误后，再确认收货',
+    confirmColor: '#27BA9B',
+    success: async (res) => {
+      if (res.confirm) {
+        await putMemberOrderReceiptByIdAPI(id)
+        uni.showToast({ icon: 'success', title: '确认收货成功' })
+        // 确认成功，更新为待评价
+        const order = orderList.value.find((v) => v.id === id)
+        order!.orderState = OrderState.DaiPingJia
+      }
+    }
+  })
+}
+
 // 是否分页结束
 const isFinish = ref(false)
 // 是否触发下拉刷新
@@ -153,7 +170,11 @@ const onRefresherrefresh = async () => {
             再次购买
           </navigator>
           <!-- 待收货状态: 展示确认收货 -->
-          <view v-if="order.orderState === OrderState.DaiShouHuo" class="button primary">
+          <view
+            v-if="order.orderState === OrderState.DaiShouHuo"
+            class="button primary"
+            @tap="onOrderConfirm(order.id)"
+          >
             确认收货
           </view>
         </template>
