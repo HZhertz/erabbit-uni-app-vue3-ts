@@ -58,10 +58,36 @@ const onOrderPay = async (id: string) => {
   const order = orderList.value.find((v) => v.id === id)
   order!.orderState = OrderState.DaiFaHuo
 }
+
+// 是否分页结束
+const isFinish = ref(false)
+// 是否触发下拉刷新
+const isTriggered = ref(false)
+// 自定义下拉刷新被触发
+const onRefresherrefresh = async () => {
+  // 开始动画
+  isTriggered.value = true
+  // 重置数据
+  queryParams.page = 1
+  orderList.value = []
+  isFinish.value = false
+  // 加载数据
+  await getMemberOrderData()
+  // 关闭动画
+  isTriggered.value = false
+}
 </script>
 
 <template>
-  <scroll-view scroll-y class="orders">
+  <scroll-view
+    enable-back-to-top
+    scroll-y
+    class="orders"
+    refresher-enabled
+    :refresher-triggered="isTriggered"
+    @refresherrefresh="onRefresherrefresh"
+    @scrolltolower="getMemberOrderData"
+  >
     <view class="card" v-for="order in orderList" :key="order.id">
       <!-- 订单信息 -->
       <view class="status">
@@ -116,7 +142,7 @@ const onOrderPay = async (id: string) => {
     </view>
     <!-- 底部提示文字 -->
     <view class="loading-text" :style="{ paddingBottom: safeAreaInsets?.bottom + 'px' }">
-      isFinish ? '没有更多数据~' : '正在加载...'
+      {{ isFinish ? '没有更多数据~' : '正在加载...' }}
     </view>
   </scroll-view>
 </template>
