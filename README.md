@@ -1,8 +1,10 @@
 ## 项目简介
 
-小兔鲜儿项目包含从首页浏览商品，商品详情，微信登录，加入购物车，提交订单，微信支付，订单管理等功能。
+### 项目说明
 
-当前仓库为小兔鲜儿的**项目模板**。
+本项目为黑马小兔鲜儿电商项目，包含从首页浏览商品，商品详情，微信登录，加入购物车，提交订单，微信支付，订单管理等功能。
+
+当前仓库是 **uni-app** 开发的**微信小程序端**，通过**条件编译**能兼容 **H5 端** 和 **App 端**。
 
 ### 技术栈
 
@@ -10,7 +12,47 @@
 - 状态管理：[pinia](https://pinia.vuejs.org/zh/)
 - 组件库：[uni-ui](https://uniapp.dcloud.net.cn/component/uniui/uni-ui.html)
 
+### 在线体验
+
+<table>
+  <tr>
+    <td>体验小程序端</td>
+    <td>体验 H5 端</td>
+    <td>体验 App 端(安卓)</td>
+  </tr>
+  <tr>
+    <td><img width="300" src="./README/images/code-mp-weixin.png" alt=""></td>
+    <td><img width="300" src="./README/images/code-h5.png" alt=""></td>
+    <td><img width="300" src="./README/images/code-android.png" alt=""></td>
+  </tr>
+</table>
+
+### 项目截图
+
+<table>
+  <tr>
+    <td><img width="100" src="./README/images/screenshot_1.jpg" alt=""></td>
+    <td><img width="100" src="./README/images/screenshot_2.jpg" alt=""></td>
+    <td><img width="100" src="./README/images/screenshot_3.jpg" alt=""></td>
+    <td><img width="100" src="./README/images/screenshot_4.jpg" alt=""></td>
+    <td><img width="100" src="./README/images/screenshot_5.jpg" alt=""></td>
+    <td><img width="100" src="./README/images/screenshot_6.jpg" alt=""></td>
+  </tr>
+  <tr>
+    <td><img width="100" src="./README/images/screenshot_7.jpg" alt=""></td>
+    <td><img width="100" src="./README/images/screenshot_8.jpg" alt=""></td>
+    <td><img width="100" src="./README/images/screenshot_9.jpg" alt=""></td>
+    <td><img width="100" src="./README/images/screenshot_10.jpg" alt=""></td>
+    <td><img width="100" src="./README/images/screenshot_11.jpg" alt=""></td>
+    <td><img width="100" src="./README/images/screenshot_12.jpg" alt=""></td>
+  </tr>
+</table>
+
 ## 资料说明
+
+### 📀 相关视频
+
+[https://www.bilibili.com/video/BV1Bp4y1379L/](https://www.bilibili.com/video/BV1Bp4y1379L/?share_source=copy_web&vd_source=2ac50d29193927b3c8597537dc4bc81d)
 
 ### 📗 接口文档
 
@@ -19,6 +61,28 @@
 ### 📦 项目源码
 
 [https://gitee.com/Megasu/uniapp-shop-vue3-ts/](https://gitee.com/Megasu/uniapp-shop-vue3-ts/)
+
+### 项目模块
+
+- 项目起步
+- 首页模块
+- 推荐模块
+- 分类模块
+- 详情模块
+- 登录模块
+- 用户模块
+- 地址模块
+- SKU 模块
+- 购物车模块
+- 订单模块
+- 项目打包
+
+### 开发环境
+
+- Windows 版本： Windows 11 家庭中文版
+- 开发工具： VS Code 、 HbuilderX 、 微信开发者工具
+- Node 版本： v20.6.0
+- pnpm 版本：v8.12.1
 
 ## 运行程序
 
@@ -61,7 +125,19 @@ npm run dev:h5
 │       ├── category            # 分类页
 │       ├── cart                # 购物车
 │       ├── my                  # 我的
+│       ├── goods               # 商品详情
+│       └── hot                 # 热门推荐
 │       └── login               # 登录页
+│   ├── pagesMember            # 分包页面(用户模块)
+│       ├── address             # 地址管理
+│       ├── address-form        # 地址表单
+│       ├── profile             # 用户信息
+│       └── settings            # 用户设置
+│   ├── pagesOrder             # 分包页面(订单模块)
+│       ├── create              # 创建订单
+│       ├── detail              # 订单详情
+│       ├── list                # 订单列表
+│       └── payment             # 支付结果
 │   ├── services               # 所有请求
 │   ├── static                 # 存放应用引用的本地静态资源的目录
 │       ├── images              # 普通图片
@@ -72,19 +148,17 @@ npm run dev:h5
 │   ├── styles                 # 全局样式
 │       └── fonts.scss          # 字体图标
 │   ├── types                  # 类型声明文件
-│       └── component.d.ts      # 全局组件类型声明
 │   ├── utils                  # 全局方法
 │   ├── App.vue                # 入口页面
 │   ├── main.ts                # Vue初始化入口文件
 │   ├── pages.json             # 配置页面路由等页面类信息
 │   ├── manifest.json          # 配置appid等打包信息
 │   └── uni.scss               # uni-app 内置的常用样式变量
-├── .editorconfig              # editorconfig 配置
 ├── .eslintrc.cjs              # eslint 配置
 ├── .prettierrc.json           # prettier 配置
 ├── .gitignore                 # git 忽略文件
 ├── index.html                 # H5 端首页
 ├── package.json               # package.json 依赖
 ├── tsconfig.json              # typescript 配置
-└── vite.config.ts             # vite 配置
+└── vite.config.ts             # vue-cli 配置
 ```
