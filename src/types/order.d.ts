@@ -1,4 +1,4 @@
-import type { OrderState } from '@/services/constants'
+import type { OrderState } from '@/types/constants'
 import type { AddressItem } from './address'
 import type { PageParams } from '@/types/global'
 
