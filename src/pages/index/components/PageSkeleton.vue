@@ -136,17 +136,14 @@
   </view>
 </template>
 
-<style>
-/*
-此文件为开发者工具生成，生成时间: 2024/1/18下午8:01:30
-
-在 D:\Project\uni-app\erabbit-uni-app-vue3-ts\dist\dev\mp-weixin\pages\index\index.wxss 中引入样式
-```
-@import "./index.skeleton.wxss";
-```
-
-更多详细信息可以参考文档：https://developers.weixin.qq.com/miniprogram/dev/devtools/skeleton.html
-*/
+<style lang="scss">
+/* #ifdef H5 || APP-PLUS */
+/* 修复 H5 端骨架屏样式异常 */
+/* 原因：H5 端样式自动开启 scoped 隔离，导致骨架屏的基础样式被隔离 */
+@import '../styles/category.scss';
+@import '../styles/hot.scss';
+@import '@/components/styles/XtxSwiper.scss';
+/* #endif */
 .sk-transparent {
   color: transparent !important;
 }
