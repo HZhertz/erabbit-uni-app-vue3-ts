@@ -4,7 +4,6 @@ import type { OrderItem, OrderListParams } from '@/types/order'
 import { onMounted, ref } from 'vue'
 import { orderStateList } from '@/types/constants'
 import { OrderState } from '@/types/constants'
-import { getPayMockAPI, getPayWxPayMiniPayAPI } from '@/services/pay'
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
@@ -26,38 +25,33 @@ const orderList = ref<OrderItem[]>([])
 // 是否加载中标记，用于防止滚动触底触发多次请求
 const isLoading = ref(false)
 const getMemberOrderData = async () => {
+  // 如果数据出于加载中，退出函数
+  if (isLoading.value) return
+  // 退出分页判断
+  if (isFinish.value === true) {
+    return
+  }
+  // 发送请求前，标记为加载中
+  isLoading.value = true
+  // 发送请求
   const res = await getMemberOrderAPI(queryParams)
+  // 发送请求后，重置标记
+  isLoading.value = false
   // 数组追加
   orderList.value.push(...res.result.items)
+  // 分页条件
+  if (queryParams.page < res.result.pages) {
+    // 页码累加
+    queryParams.page++
+  } else {
+    // 分页已结束
+    isFinish.value = true
+  }
 }
 
 onMounted(() => {
   getMemberOrderData()
 })
-
-// 订单支付
-const onOrderPay = async (id: string) => {
-  if (import.meta.env.DEV) {
-    // 开发环境模拟支付
-    await getPayMockAPI({ orderId: id })
-  } else {
-    // #ifdef MP-WEIXIN
-    // 正式环境微信支付
-    const res = await getPayWxPayMiniPayAPI({ orderId: id })
-    await wx.requestPayment(res.result)
-    // #endif
-
-    // #ifdef H5 || APP-PLUS
-    // H5端 和 App 端未开通支付-模拟支付体验
-    await getPayMockAPI({ orderId: id })
-    // #endif
-  }
-  // 成功提示
-  uni.showToast({ title: '支付成功' })
-  // 更新订单状态
-  const order = orderList.value.find((v) => v.id === id)
-  order!.orderState = OrderState.DaiFaHuo
-}
 
 // 是否分页结束
 const isFinish = ref(false)
